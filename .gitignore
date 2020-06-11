@@ -1,5 +1,6 @@
 # Project exclude paths
 venv
 dist
+build
 pypreproc.egg-info
 .idea

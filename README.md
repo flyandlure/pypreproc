@@ -2,7 +2,7 @@
 PyPreProc is a Python package that you can use for preprocessing and feature engineering during machine learning development projects. It uses Pandas and makes it quicker and easier to correct, convert, cluster and create data. 
 
 ## Setup
-PyPreProc can be installed via PyPi using `pip3 install pypreproc`.
+PyPreProc can be installed via PyPi using `pip3 install pypreproc`. (Some versions of `wheel` may prevent installation. If this happens, run `pip3 install wheel --upgrade` to use a later version and then install with `pip3 install pypreproc`.)
 
 ## Examples
 To use PyPreProc simply load your data into a Pandas DataFrame.
