@@ -645,3 +645,57 @@ def get_conversion_rate(df, total, conversions):
     value = (df[conversions] / df[total])
     return value
 
+
+def count_subzero(df):
+    """Count the number of subzero values in a Pandas DataFrame row.
+    If you fill NaN values with -1 during feature engineering, instead
+    of zero, you can use this to create a new feature, which may yield
+    more valuable information than the mere presence of zeros.
+
+    Args:
+        :param df: Pandas DataFrame.
+
+    Returns:
+        Column value for each row in DataFrame
+
+    Example:
+
+        df = count_subzero(df)
+    """
+
+    return np.sum(df < 0, axis=1)
+
+
+def count_zero(df):
+    """Count the number of zero values in a Pandas DataFrame row to create a new feature.
+
+    Args:
+        :param df: Pandas DataFrame.
+
+    Returns:
+        Column value for each row in DataFrame
+
+    Example:
+
+        df = count_zero(df)
+    """
+
+    return np.sum(df == 0, axis=1)
+
+
+def count_missing(df):
+    """Count the number of missing or NaN values in a Pandas DataFrame row to create a new feature.
+
+    Args:
+        :param df: Pandas DataFrame.
+
+    Returns:
+        Column value for each row in DataFrame
+
+    Example:
+
+        df = count_missing(df)
+    """
+
+    return df.isnull().sum(axis=1)
+

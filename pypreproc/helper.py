@@ -5,6 +5,7 @@ Date: Jan 1, 2020
 Description: Helper functions for accessing Pandas data.
 """
 
+import numpy as np
 from sklearn import feature_selection
 
 
@@ -76,4 +77,24 @@ def get_low_var_cols(df, threshold):
     selector = feature_selection.VarianceThreshold(threshold=threshold)
     selector.fit(df)
     return df.columns[~selector.get_support()]
+
+
+def get_numeric_cols(df):
+    """Returns a list of column names from a DataFrame where the data type is numeric.
+
+    :param df: Pandas DataFrame
+    :return: Python list of numeric columns
+    """
+
+    return df.select_dtypes([np.number]).columns
+
+
+def get_non_numeric_cols(df):
+    """Returns a list of column names from a DataFrame where the data type is non-numeric.
+
+    :param df: Pandas DataFrame
+    :return: Python list of non-numeric columns
+    """
+
+    return df.select_dtypes(exclude=[np.number]).columns
 
