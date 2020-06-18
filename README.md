@@ -323,6 +323,24 @@ The `get_conversion_rate()` function returns the conversion rate for a column.
 df['cr'] = create.get_conversion_rate(df, 'sessions', 'orders')
 ```
 
+The `count_subzero()` function returns a count of values that are less than one. By filling NaN values with -1, and then counting these, you can create a new feature. 
+
+```python
+df['total_subzero'] = create.count_subzero(df)
+```
+
+Similarly, `count_zero()` does the same for zero values. 
+
+```python
+df['total_zero'] = create.count_zero(df)
+```
+
+The `count_missing()` function does this for NaN values. 
+
+```python
+df['total_nan'] = create.count_missing(df)
+```
+
 ## Helpers
 The `select()` helper function provides a very quick and easy way to filter a Pandas DataFrame. It takes five values: `df` (the DataFrame), `column_name` (the name of the column you want to search), `operator` (the search operator you want to use [endswith, startswith, contains, isin, is]), and an optional `exclude` parameter (`True` or `False`) which defines whether the search includes or excludes the data.
 
@@ -345,3 +363,15 @@ The `get_low_var_cols()` function examines all of the numeric columns in a Panda
 ```python
 low_var_cols = helper.get_low_var_cols(df, 0.01)
 ``` 
+
+To get a list of numeric columns in a Pandas DataFrame you can use the `get_numeric_cols()` function.
+
+```python
+numeric_cols = helper.get_numeric_cols(df)
+```
+
+Similarly, `get_non_numeric_cols()` returns a list of non-numeric column names.
+
+```python
+non_numeric_cols = helper.get_non_numeric_cols(df)
+```

@@ -8,7 +8,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 setup(
     name='pypreproc',
     packages=['pypreproc'],
-    version='0.181',
+    version='0.19',
     license='MIT',
     description='PyPreProc is a Python package for correcting, converting, clustering and creating data in Pandas as part of the feature engineering step of the machine learning process.',
     long_description=long_description,
