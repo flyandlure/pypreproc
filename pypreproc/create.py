@@ -337,16 +337,17 @@ def get_dates(df, date_column):
         Original DataFrame with additional date columns.
     """
 
-    df['day'] = df[date_column].dt.strftime("%d")  # Day of month with leading zero
-    df['month'] = df[date_column].dt.strftime("%m")  # Month of year with leading zero
-    df['year'] = df[date_column].dt.strftime("%Y")  # Full numeric four digit year
-    df['year_month'] = df[date_column].dt.strftime("%Y%m")  # Full numeric four digit year plus month
-    df['week_number'] = df[date_column].dt.strftime("%U")  # Week number with leading zero
-    df['day_number'] = df[date_column].dt.strftime("%j")  # Day number with leading zero
+    df['day'] = df[date_column].dt.strftime("%d").astype(int)  # Day of month with leading zero
+    df['month'] = df[date_column].dt.strftime("%m").astype(int)  # Month of year with leading zero
+    df['year'] = df[date_column].dt.strftime("%Y").astype(int)  # Full numeric four digit year
+    df['year_month'] = df[date_column].dt.strftime("%Y%m").astype(int)  # Full numeric four digit year plus month
+    df['week_number'] = df[date_column].dt.strftime("%U").astype(int)  # Week number with leading zero
+    df['day_number'] = df[date_column].dt.strftime("%j").astype(int)  # Day number with leading zero
     df['day_name'] = df[date_column].dt.strftime("%A")  # Day name, i.e. Sunday
     df['month_name'] = df[date_column].dt.strftime("%B")  # Month name, i.e. January
     df['mysql_date'] = df[date_column].dt.strftime("%Y-%d-%m")  # MySQL date, i.e. 2020-30-01
-    df['quarter'] = df[date_column].dt.quarter  # Quarter with leading zero, i.e. 01
+    df['quarter'] = df[date_column].dt.quarter.astype(int)  # Quarter with leading zero, i.e. 01
+    df['week_day_number'] = df[date_column].dt.strftime("%w").astype(int)  # Weekday number, i.e. 0 = Sunday, 1 = Monday
 
     return df
 

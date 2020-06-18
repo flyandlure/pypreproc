@@ -5,20 +5,7 @@ Date: Jan 1, 2020
 Description: Helper functions for accessing Pandas data.
 """
 
-
-def get_unique_rows(df, columns, sort_by):
-    """De-dupe a Pandas DataFrame and return unique rows.
-
-    :param df: Pandas DataFrame.
-    :param columns: List of columns to return.
-    :param sort_by: Column to sort by.
-    :return: Pandas DataFrame de-duped to remove duplicate rows.
-    """
-
-    df = df[columns]
-    df = df.drop_duplicates(subset=None, keep='last', inplace=False)
-    df = df.sort_values(sort_by, ascending=False)
-    return df
+from sklearn import feature_selection
 
 
 def select(df, column_name, operator, where=[], exclude=False):
@@ -53,4 +40,40 @@ def select(df, column_name, operator, where=[], exclude=False):
         selected = df[column_name].str.contains(where)
 
     return df[selected] if not exclude else df[~selected]
+
+
+def get_unique_rows(df, columns, sort_by):
+    """De-dupe a Pandas DataFrame and return unique rows.
+
+    :param df: Pandas DataFrame.
+    :param columns: List of columns to return.
+    :param sort_by: Column to sort by.
+    :return: Pandas DataFrame de-duped to remove duplicate rows.
+    """
+
+    df = df[columns]
+    df = df.drop_duplicates(subset=None, keep='last', inplace=False)
+    df = df.sort_values(sort_by, ascending=False)
+    return df
+
+
+def get_low_var_cols(df, threshold):
+    """Analyse a Pandas DataFrame, extract the numeric columns and
+    return a list of those which have a variance below the threshold.
+
+    Args:
+        :param df: Pandas DataFrame.
+        :param threshold: Variance threshold.
+
+    Returns:
+        List of columns with variance below the threshold.
+
+    Example:
+        low_var_cols = get_low_var_cols(df, 0.01)
+
+    """
+    df = df.select_dtypes(['number'])
+    selector = feature_selection.VarianceThreshold(threshold=threshold)
+    selector.fit(df)
+    return df.columns[~selector.get_support()]
 

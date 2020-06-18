@@ -9,7 +9,7 @@ To use PyPreProc simply load your data into a Pandas DataFrame.
 
 ```python
 import pandas as pd
-from pypreproc import correct
+from pypreproc import correct, convert, create, cluster, customer
 df = pd.read_csv('data.csv')
 ```
 
@@ -221,7 +221,7 @@ df = create.cols_to_sum(df, 'region', 'cars')
 The `get_rolling_average()` function returns the rolling average for a column based on a grouping over X previous periods. For example, the rolling average order value for a customer over their past three visits. 
 
 ```python
-df = create.get_rolling_average(df, 'group_col', 'avg_col', 5, 'sort_col')
+df['ravg'] = create.get_rolling_average(df, 'group_col', 'avg_col', 5, 'sort_col')
 ```
 
 ### Dates
@@ -324,12 +324,6 @@ df['cr'] = create.get_conversion_rate(df, 'sessions', 'orders')
 ```
 
 ## Helpers
-The `get_unique_rows()` function de-dupes rows in Pandas DataFrame and returns a new DataFrame containing only the unique rows. This simple function keeps the last value. 
-
-```python
-df = helper.get_unique_rows(df, ['col1', 'col2'], 'sort_column')
-```
-
 The `select()` helper function provides a very quick and easy way to filter a Pandas DataFrame. It takes five values: `df` (the DataFrame), `column_name` (the name of the column you want to search), `operator` (the search operator you want to use [endswith, startswith, contains, isin, is]), and an optional `exclude` parameter (`True` or `False`) which defines whether the search includes or excludes the data.
 
 ```python
@@ -338,4 +332,16 @@ sw = helper.select(df, 'genus', 'startswith', where='Haplo', exclude=False)
 contains = helper.select(df, 'genus', 'contains', where='cich', exclude=False)
 isin = helper.select(df, 'genus', 'isin', where=['cich','theraps'], exclude=False)
 _is = helper.select(df, 'genus', 'is', where='Astronotus', exclude=False)
+``` 
+
+The `get_unique_rows()` function de-dupes rows in Pandas DataFrame and returns a new DataFrame containing only the unique rows. This simple function keeps the last value. 
+
+```python
+df = helper.get_unique_rows(df, ['col1', 'col2'], 'sort_column')
+```
+
+The `get_low_var_cols()` function examines all of the numeric columns in a Pandas DataFrame and returns those which have variances lower than a defined threshold. These low variance columns are good candidates for removal from your model, since they will contribute little.
+
+```python
+low_var_cols = helper.get_low_var_cols(df, 0.01)
 ``` 
