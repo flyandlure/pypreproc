@@ -72,7 +72,7 @@ def cols_to_datetime(df, columns):
     """
 
     for col in columns:
-        df[col] = pd.to_datetime(df[col])
+        df[col] = pd.to_datetime(df[col], format='%Y%m%d')
 
     return df
 

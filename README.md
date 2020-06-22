@@ -6,6 +6,7 @@ PyPreProc can be installed via PyPi using `pip3 install pypreproc`. (Some versio
 
 ## Examples
 To use PyPreProc simply load your data into a Pandas DataFrame.
+To use PyPreProc simply load your data into a Pandas DataFrame.
 
 ```python
 import pandas as pd
@@ -224,6 +225,14 @@ The `get_rolling_average()` function returns the rolling average for a column ba
 df['ravg'] = create.get_rolling_average(df, 'group_col', 'avg_col', 5, 'sort_col')
 ```
 
+The `get_grouped_metric()` function performs a specified mathematical operation on a metric column using a group column. For example, summing all of the sessions by a user ID within the DataFrame.
+
+```python
+df['total_sessions'] = create.get_grouped_metric(df, 'id', 'sessions', 'count')
+```
+
+
+
 ### Dates
 
 The `get_days_since_date()` function returns a new column containing the date difference in days between two dates. For example, the number of days since a last dose.
@@ -236,6 +245,13 @@ The `get_dates()` function takes a single date column and returns a load of new 
 
 ```python
 df = create.get_dates(df, 'visit_date')
+```
+
+The `date_add()` and `date_subtract` functions add or subtract a given number of days from a date and return a new date in the desired format. The date provided can be a column value from a DataFrame row or the current date. 
+
+```python
+date_minus_7 = create.date_subtract(datetime.today(), 7, '%Y-%m-%d')
+date_plus_7 = create.date_subtract(datetime.today(), 7, '%Y-%m-%d')
 ```
 
 ### Other features
@@ -342,7 +358,7 @@ df['total_nan'] = create.count_missing(df)
 ```
 
 ## Helpers
-The `select()` helper function provides a very quick and easy way to filter a Pandas DataFrame. It takes five values: `df` (the DataFrame), `column_name` (the name of the column you want to search), `operator` (the search operator you want to use [endswith, startswith, contains, isin, is]), and an optional `exclude` parameter (`True` or `False`) which defines whether the search includes or excludes the data.
+The `select()` helper function provides a very quick and easy way to filter a Pandas DataFrame. It takes five values: `df` (the DataFrame), `column_name` (the name of the column you want to search), `operator` (the search operator you want to use [endswith, startswith, contains, isin, is, gt, gte, lt, lte]), and an optional `exclude` parameter (`True` or `False`) which defines whether the search includes or excludes the data. The gt, lt, lte, gte operators can only be used on numeric or date fields,
 
 ```python
 ends = helper.select(df, 'genus', 'endswith', where='chromis', exclude=False)
@@ -350,6 +366,10 @@ sw = helper.select(df, 'genus', 'startswith', where='Haplo', exclude=False)
 contains = helper.select(df, 'genus', 'contains', where='cich', exclude=False)
 isin = helper.select(df, 'genus', 'isin', where=['cich','theraps'], exclude=False)
 _is = helper.select(df, 'genus', 'is', where='Astronotus', exclude=False)
+date_gte = helper.select(df, 'date', 'date_gte', '2020-06-05')
+date_gt = helper.select(df, 'date', 'date_gt', '2020-06-05')
+date_lte = helper.select(df, 'date', 'date_lte', '2020-06-05')
+date_lt = helper.select(df, 'date', 'date_lt', '2020-06-05')
 ``` 
 
 The `get_unique_rows()` function de-dupes rows in Pandas DataFrame and returns a new DataFrame containing only the unique rows. This simple function keeps the last value. 

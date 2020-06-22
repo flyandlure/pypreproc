@@ -16,7 +16,9 @@ def select(df, column_name, operator, where=[], exclude=False):
     ----------
     :param df: Pandas dataframe
     :param column_name: Column name to search within
-    :param operator: Operator (startswith, endswith, contains, or isin)
+    :param operator: Operator (startswith, endswith, contains, or isin, gt [greater than]
+    lt [less than], ge [greater than or equal to], le [less than or equal to])
+    :param where: Python list containing one or more values for where clause
     :param exclude: Optional parameter to include or exclude based on where
     ---------
     Examples:
@@ -25,8 +27,14 @@ def select(df, column_name, operator, where=[], exclude=False):
     contains = select(df, 'item_code', 'contains', where='A4', exclude=False)
     isin = select(df, 'item_code', 'isin', where=['PFG3A4','PFG3A5'], exclude=False)
     _is = select(df, 'code', 'is', where='B', exclude=False)
+    date_ge = select(df, 'date', 'ge', '2020-06-05')
+    date_gt = select(df, 'date', 'gt', '2020-06-05')
+    date_le = select(df, 'date', 'le', '2020-06-05')
+    date_lt = select(df, 'date', 'lt', '2020-06-05')
+
     """
 
+    # Strings
     if operator == 'startswith':
         selected = df[column_name].str.startswith(where)
     elif operator == 'endswith':
@@ -37,6 +45,18 @@ def select(df, column_name, operator, where=[], exclude=False):
         selected = df[column_name].isin(where)
     elif operator == 'is':
         selected = df[column_name] == where
+
+    # Dates and numbers
+    elif operator == 'lt':
+        selected = df[column_name] < where
+    elif operator == 'le':
+        selected = df[column_name] <= where
+    elif operator == 'gt':
+        selected = df[column_name] > where
+    elif operator == 'ge':
+        selected = df[column_name] >= where
+
+    # Default
     else:
         selected = df[column_name].str.contains(where)
 
