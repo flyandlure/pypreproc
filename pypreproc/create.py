@@ -286,22 +286,37 @@ def cols_to_sum(df, group, columns):
     return df
 
 
-def get_previous_value(df, group, column, name):
+def get_previous_value(df, group, column):
     """Group by a column and return the previous value of another column and assign value to a new column.
 
     Args:
         df: Pandas DataFrame.
         group: Column name to groupby
         column: Column value to return.
-        name: Name for new column.
 
     Returns:
         Original DataFrame with new column containing previous value of named column.
 
     """
     df = df.copy()
-    df[name] = df.groupby([group])[column].shift(-1)
-    return df
+    return df.groupby([group])[column].shift(-1)
+
+
+def get_next_value(df, group, column):
+    """Group by a column and return the next value of a column.
+    For example, group by customer and get the value of their next order.
+
+    Args:
+        df: Pandas DataFrame.
+        group: Column name to groupby
+        column: Column value to return.
+
+    Returns:
+        Original DataFrame with new column containing next value of named column.
+
+    """
+    df = df.copy()
+    return df.groupby([group])[column].shift(1)
 
 
 def get_grouped_stats(df, group, columns):

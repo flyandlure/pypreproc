@@ -309,10 +309,11 @@ The `get_previous_cumulative_count()` function counts cumulative column values b
 previous_orders = create.get_previous_cumulative_count(df, 'group_column', 'count_column', 'sort_column')
 ```
 
-The `get_previous_value()` function groups by a column and return the previous value of another column and assign value to a new column. For example, the previous value of a customer's order.
+The `get_previous_value()` function groups by a column and return the previous value of another column and assign value to a new column. For example, the previous value of a customer's order. `get_next_value()` gets the next value. Filling NaN values with zero may be helpful.
 
 ```python
-df = create.get_previous_value(df, 'customer_id', 'order_value')
+df['prev_order_value'] = create.get_previous_value(df, 'customer_id', 'order_value').fillna(0)
+df['next_order_value'] = create.get_next_value(df, 'customer_id', 'order_value').fillna(0)
 ```
 
 The `get_probability_ratio()` groups a Pandas DataFrame via a given column and returns the probability ratio of the target variable for that grouping. It's a useful way of using target data to improve model performance, with less likelihood of introducing data leakage.  
