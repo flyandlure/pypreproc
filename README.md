@@ -231,7 +231,11 @@ The `get_grouped_metric()` function performs a specified mathematical operation 
 df['total_sessions'] = create.get_grouped_metric(df, 'id', 'sessions', 'count')
 ```
 
+The `get_grouped_metric_lookahead()` function works like `get_grouped_metric()` but uses a date column to calculate data for the next X days (not including the current date). For example, group by ID, and count visits from the same ID in the next 30 days.
 
+```python
+df['visits_next_30d'] = create.get_grouped_metric_lookahead(df, 'id', 'sessions', 'count', 'date', 30)
+```
 
 ### Dates
 
