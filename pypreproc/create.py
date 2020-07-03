@@ -8,6 +8,7 @@ Description: Functions to create new Pandas DataFrame features from existing dat
 import pandas as pd
 import numpy as np
 import itertools
+import holidays
 from datetime import datetime, timedelta
 
 
@@ -817,6 +818,10 @@ def get_dates(df, date_column):
     df['mysql_date'] = df[date_column].dt.strftime("%Y-%d-%m")  # MySQL date, i.e. 2020-30-01
     df['quarter'] = df[date_column].dt.quarter.astype(int)  # Quarter with leading zero, i.e. 01
     df['week_day_number'] = df[date_column].dt.strftime("%w").astype(int)  # Weekday number, i.e. 0 = Sunday, 1 = Monday
+    df['is_weekend'] = ((pd.DatetimeIndex(df['date']).dayofweek) // 5 == 1).astype(int)  # 1 if weekend, 0 if weekday
+
+    uk_holidays = holidays.UK()
+    df['is_uk_holiday'] = np.where(df.date.isin(uk_holidays), 1, 0).astype(int)  # Return 1 if this is a holiday
 
     return df
 
