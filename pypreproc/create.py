@@ -8,6 +8,7 @@ Description: Functions to create new Pandas DataFrame features from existing dat
 import pandas as pd
 import numpy as np
 import itertools
+import holidays
 from datetime import datetime, timedelta
 
 
@@ -286,22 +287,37 @@ def cols_to_sum(df, group, columns):
     return df
 
 
-def get_previous_value(df, group, column, name):
+def get_previous_value(df, group, column):
     """Group by a column and return the previous value of another column and assign value to a new column.
 
     Args:
         df: Pandas DataFrame.
         group: Column name to groupby
         column: Column value to return.
-        name: Name for new column.
 
     Returns:
         Original DataFrame with new column containing previous value of named column.
 
     """
     df = df.copy()
-    df[name] = df.groupby([group])[column].shift(-1)
-    return df
+    return df.groupby([group])[column].shift(-1)
+
+
+def get_next_value(df, group, column):
+    """Group by a column and return the next value of a column.
+    For example, group by customer and get the value of their next order.
+
+    Args:
+        df: Pandas DataFrame.
+        group: Column name to groupby
+        column: Column value to return.
+
+    Returns:
+        Original DataFrame with new column containing next value of named column.
+
+    """
+    df = df.copy()
+    return df.groupby([group])[column].shift(1)
 
 
 def get_grouped_stats(df, group, columns):
@@ -706,6 +722,26 @@ def get_grouped_metric_where(df, group_column, operation, metric_column, where_c
         return 0
 
 
+def get_grouped_metric_lookahead(df, group_column, metric_column, operation, date_column, days):
+    """Group by a specified column, look ahead X days, then perform a mathematical operation
+    on a given metric column and return the value so it can be assigned to the DataFrame.
+    For example, group by ID and sum the value of orders placed in the next 30 days.
+
+    :param df: Pandas DataFrame
+    :param group_column: Column name to use for groupby, i.e. id
+    :param metric_column: Column name for metric column, i.e. visits
+    :param operation: Operation to perform (sum, count, nunique, min, max, median, mean)
+    :param date_column: Column name containing date (in DateTime format)
+    :param days: Number of days to look ahead, i.e. 7
+    """
+
+    date_from = df[date_column]
+    date_to = date_add(df[date_column], days, '%Y-%m-%d')
+
+    return df[(df[date_column] >= date_from) & (df[date_column] <= date_to)].groupby(group_column)[
+        metric_column].transform(operation)
+
+
 def date_subtract(date, days_to_subtract, date_format):
     """Subtracts a given number of days from a date and returns the date in a defined format.
 
@@ -727,7 +763,6 @@ def date_add(date, days_to_add, date_format):
 
     :param date: Python datetime value on which to add
     :param days_to_add: Number of days to add to date
-    :param date_format: Date format to return (i.e. '%Y-%m-%d' for 2020-06-30)
     :returns: Date in specific format plus X days
 
     Examples:
@@ -735,7 +770,7 @@ def date_add(date, days_to_add, date_format):
         df['date_plus_30_days'] = date_add(datetime.today(), 30, '%Y-%m-%d')
     """
 
-    return (date + timedelta(days=days_to_add)).strftime(date_format)
+    return date + pd.DateOffset(days=days_to_add)
 
 
 def get_days_since_date(df, before_datetime, after_datetime, name):
@@ -783,6 +818,10 @@ def get_dates(df, date_column):
     df['mysql_date'] = df[date_column].dt.strftime("%Y-%d-%m")  # MySQL date, i.e. 2020-30-01
     df['quarter'] = df[date_column].dt.quarter.astype(int)  # Quarter with leading zero, i.e. 01
     df['week_day_number'] = df[date_column].dt.strftime("%w").astype(int)  # Weekday number, i.e. 0 = Sunday, 1 = Monday
+    df['is_weekend'] = ((pd.DatetimeIndex(df['date']).dayofweek) // 5 == 1).astype(int)  # 1 if weekend, 0 if weekday
+
+    uk_holidays = holidays.UK()
+    df['is_uk_holiday'] = np.where(df.date.isin(uk_holidays), 1, 0).astype(int)  # Return 1 if this is a holiday
 
     return df
 
